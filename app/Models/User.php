@@ -6,7 +6,7 @@ namespace App\Models;
 use App\Models\cart;
 use App\Models\order;
 use App\Models\product;
-use App\Models\order_item;
+use App\Models\orderItem;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -67,6 +67,6 @@ class User extends Authenticatable
         return $this->hasMany(product::class, 'vendeur_id');
     }
     public function sales(){
-        return $this->hasManyThrough(order_item::class, product::class, 'vendeur_id', 'product_id');
+        return $this->hasManyThrough(orderItem::class, product::class, 'vendeur_id', 'product_id');
     }
 }
