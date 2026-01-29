@@ -28,17 +28,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function(Request $request){
         return $request->user();
     });
-    
-    // Routes de gestion des produits
-    Route::post('/products', [ProductController::class, 'store']);
-    Route::put('/products/{id}', [ProductController::class, 'update']);
-    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
-    Route::post('/products/{id}/increment-stock', [ProductController::class, 'incrementStock']);
-    Route::post('/products/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
-    
-// Routes accessibles uniquement aux vendeurs
-    Route::middleware('role:vendeur')->group(function(){
-    });
+});
+
+// Routes accessibles aux vendeurs et administrateurs (préfixe produits_vendeurs)
+Route::prefix('produits_vendeurs')->middleware(['auth:sanctum','role:vendeur,admin'])->group(function(){
+    // Routes de gestion des produits par vendeurs/admin
+    Route::post('/', [ProductController::class, 'store']);
+    Route::put('/{id}', [ProductController::class, 'update']);
+    Route::delete('/{id}', [ProductController::class, 'destroy']);
+    Route::post('/{id}/increment-stock', [ProductController::class, 'incrementStock']);
+    Route::post('/{id}/decrement-stock', [ProductController::class, 'decrementStock']);
 });
 
 // Routes accessibles uniquement aux administrateurs
