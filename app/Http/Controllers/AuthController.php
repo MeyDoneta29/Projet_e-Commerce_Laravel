@@ -4,21 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
 
     //Fonction d'inscription
-    public function register(Request $request){
-        $validateData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-        ]);
+    public function register(RegisterRequest $request){
+        $validateData = $request->validated();
 
         // création de l'utilisateur
         $user = User::create([
@@ -42,17 +38,14 @@ class AuthController extends Controller
 
     //Fonction de connexion
 
-    public function login(Request $request){
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+    public function login(LoginRequest $request){
+        $credentials = $request->validated();
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $credentials['email'])->first();
 
         //verfication de securité si l'utilisateur existe déja
 
-        if(! $user || ! Hash::check($request->password, $user->password)){
+        if(! $user || ! Hash::check($credentials['password'], $user->password)){
             return response()->json([
                 'message' => 'Les identifiants sont incorrects'
             ], 401);

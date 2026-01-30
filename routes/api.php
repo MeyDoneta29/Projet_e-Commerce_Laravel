@@ -71,3 +71,14 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
     });
     // Autres routes admin à ajouter ici
 });
+// Routes accessibles uniquement aux vendeurs
+    Route::middleware('role:vendeur')->group(function(){
+    });
+});
+
+// Routes accessibles uniquement aux administrateurs
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
+        Route::get('admin/users', function(){
+            return User::all();
+        });
+});
