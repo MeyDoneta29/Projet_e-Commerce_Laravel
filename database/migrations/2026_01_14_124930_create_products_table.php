@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description');
-            $table->decimal('price', 10, 2);// dix chiffres au total dont 2 après la virgule
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2); // dix chiffres au total dont 2 après la virgule
             $table->integer('stock')->default(0);
             $table->string('image')->nullable();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // clé étrangère vers la table categories
+            $table->foreignId('categorie_id')->constrained('categories')->onDelete('cascade'); // clé étrangère vers la table categories
             $table->foreignId('vendeur_id')->constrained('users')->onDelete('cascade'); // clé étrangère vers la table users
+            $table->softDeletes();
             $table->timestamps();
             $table->softDeletes(); // Pour le soft delete
         });
