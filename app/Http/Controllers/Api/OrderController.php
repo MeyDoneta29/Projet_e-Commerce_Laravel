@@ -15,8 +15,7 @@ use App\Services\CartCalculationService;
 class OrderController extends Controller
 {
     public function __construct(
-        private CartCalculationService $calculationService,
-        private StockValidationService $stockService
+        private CartCalculationService $calculationService
     ) {}
 
     /**
@@ -96,7 +95,18 @@ class OrderController extends Controller
         }
 
         // Valider le stock
-        $stockErrors = $this->stockService->validateCartStock($cart->items);
+        $stockErrors = [];
+        foreach ($cart->items as $item) {
+            if ($item->product->stock < $item->quantity) {
+                $stockErrors[] = [
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->product->name,
+                    'available' => $item->product->stock,
+                    'requested' => $item->quantity,
+                ];
+            }
+        }
+
         if (!empty($stockErrors)) {
             return response()->json([
                 'success' => false,

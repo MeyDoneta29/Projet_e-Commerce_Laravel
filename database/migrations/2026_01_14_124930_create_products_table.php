@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); // clé étrangère vers la table categories
             $table->foreignId('vendeur_id')->constrained('users')->onDelete('cascade'); // clé étrangère vers la table users
             $table->timestamps();
+            $table->softDeletes(); // Pour le soft delete
         });
     }
 

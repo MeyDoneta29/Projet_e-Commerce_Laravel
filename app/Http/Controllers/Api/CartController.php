@@ -8,14 +8,14 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Services\CartCalculationService;
 use App\Http\Requests\StoreCartItemRequest;
+use App\Http\Requests\UpdateCartItemRequest;
 
 
 
 class CartController extends Controller
 {
     public function __construct(
-        private CartCalculationService $calculationService,
-        private StockValidationService $stockService
+        private CartCalculationService $calculationService
     ) {}
 
     /**
@@ -58,7 +58,7 @@ class CartController extends Controller
         $product = product::findOrFail($request->product_id);
 
         // Vérifier le stock
-        if (!$this->stockService->hasEnoughStock($product, $request->quantity)) {
+        if ($product->stock < $request->quantity) {
             return response()->json([
                 'success' => false,
                 'message' => 'Stock insuffisant',
@@ -77,8 +77,8 @@ class CartController extends Controller
         if ($existingItem) {
             // Mettre à jour la quantité
             $newQuantity = $existingItem->quantity + $request->quantity;
-            
-            if (!$this->stockService->hasEnoughStock($product, $newQuantity)) {
+
+            if ($product->stock < $newQuantity) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Stock insuffisant pour cette quantité totale',
@@ -120,7 +120,7 @@ class CartController extends Controller
         }
 
         // Vérifier le stock
-        if (!$this->stockService->hasEnoughStock($cartItem->product, $request->quantity)) {
+        if ($cartItem->product->stock < $request->quantity) {
             return response()->json([
                 'success' => false,
                 'message' => 'Stock insuffisant',
