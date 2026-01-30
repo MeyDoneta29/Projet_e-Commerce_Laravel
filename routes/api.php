@@ -2,31 +2,41 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+// use App\Http\Controllers\Api\AuthController; // ← COMMENTE CETTE LIGNE
 
+use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\OrderController;
 
-
-// Routes d'authentification
-
+/*
+// ===== ROUTES DE LUCE (commentées temporairement) =====
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+*/
 
-// Route protegée 
+// ===== ROUTE DE TEST POUR L'AUTH =====
+// En attendant que Luce finisse, crée un token de test
+Route::post('/login', function() {
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'user' => ['id' => 1, 'name' => 'Test User'],
+            'token' => '1|test-token-temporaire'
+        ]
+    ]);
+});
 
+// Routes protégées
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']); // deconnexion
-
+    
+    /*
+    Route::post('/logout', [AuthController::class, 'logout']);
+    
     Route::get('/user', function(Request $request){
         return $request->user();
     });
-});
+    */
 
-
-/*
-// Routes protégées par authentification
-Route::middleware(['auth:sanctum'])->group(function () {
-    
-    // Routes Panier (Clients uniquement)
+    // ===== TES ROUTES PANIER =====
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
         Route::post('/items', [CartController::class, 'addItem']);
@@ -36,7 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/total', [CartController::class, 'getTotal']);
     });
 
-    // Routes Commandes (Clients uniquement)
+    // ===== TES ROUTES COMMANDES =====
     Route::prefix('orders')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/{order}', [OrderController::class, 'show']);
@@ -44,4 +54,3 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{order}', [OrderController::class, 'destroy']);
     });
 });
-*/
