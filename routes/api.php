@@ -42,12 +42,10 @@ Route::prefix('produits_vendeurs')->middleware(['auth:sanctum','role:vendeur,adm
 
 // Routes accessibles uniquement aux administrateurs
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
-        Route::get('admin/users', function(){
-            return User::all();
-        });
-        
-        // Routes de gestion des catégories (admin seulement)
         Route::post('/categories', [CategoryController::class, 'store']);
         Route::put('/categories/{id}', [CategoryController::class, 'update']);
         Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
+        Route::get('admin/users', function(){
+            return User::all();
+        });
 });
