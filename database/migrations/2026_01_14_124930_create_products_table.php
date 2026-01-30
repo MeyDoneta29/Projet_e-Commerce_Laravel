@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('vendeur_id')->constrained('users')->onDelete('cascade'); // clé étrangère vers la table users
             $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes(); // Pour le soft delete
         });
     }
 
