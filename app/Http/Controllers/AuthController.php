@@ -70,4 +70,13 @@ class AuthController extends Controller
         ]);
     }
 
+    //Fonction pour récupérer le profil de l'utilisateur connecté
+    public function profile(Request $request)
+    {
+        return response()->json([
+            'message' => 'Profil récupéré avec succès',
+            'data' => $request->user()
+        ], 200);
+    }
+
 }
